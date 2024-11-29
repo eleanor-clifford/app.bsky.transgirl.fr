@@ -6,7 +6,6 @@ import PagerView, {
   PageScrollStateChangedNativeEvent,
 } from 'react-native-pager-view'
 
-import {LogEvents} from '#/lib/statsig/events'
 import {atoms as a, native} from '#/alf'
 
 export type PageSelectedEvent = PagerViewOnPageSelectedEvent
@@ -14,7 +13,6 @@ export type PageSelectedEvent = PagerViewOnPageSelectedEvent
 export interface PagerRef {
   setPage: (
     index: number,
-    reason: LogEvents['home:feedDisplayed']['reason'],
   ) => void
 }
 
@@ -31,7 +29,6 @@ interface Props {
   onPageSelected?: (index: number) => void
   onPageSelecting?: (
     index: number,
-    reason: LogEvents['home:feedDisplayed']['reason'],
   ) => void
   onPageScrollStateChanged?: (
     scrollState: 'idle' | 'dragging' | 'settling',
@@ -60,10 +57,9 @@ export const Pager = forwardRef<PagerRef, React.PropsWithChildren<Props>>(
     React.useImperativeHandle(ref, () => ({
       setPage: (
         index: number,
-        reason: LogEvents['home:feedDisplayed']['reason'],
       ) => {
         pagerView.current?.setPage(index)
-        onPageSelecting?.(index, reason)
+        onPageSelecting?.(index)
       },
     }))
 

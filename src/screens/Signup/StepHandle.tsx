@@ -3,7 +3,6 @@ import {View} from 'react-native'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {createFullHandle, validateHandle} from '#/lib/strings/handles'
 import {useAgent} from '#/state/session'
 import {ScreenTransition} from '#/screens/Login/ScreenTransition'
@@ -58,11 +57,6 @@ export function StepHandle() {
       dispatch({type: 'setIsLoading', value: false})
     }
 
-    logEvent('signup:nextPressed', {
-      activeStep: state.activeStep,
-      phoneVerificationRequired:
-        state.serviceDescription?.phoneVerificationRequired,
-    })
     // phoneVerificationRequired is actually whether a captcha is required
     if (!state.serviceDescription?.phoneVerificationRequired) {
       dispatch({
@@ -88,9 +82,6 @@ export function StepHandle() {
       value: handle,
     })
     dispatch({type: 'prev'})
-    logEvent('signup:backPressed', {
-      activeStep: state.activeStep,
-    })
   }, [dispatch, state.activeStep])
 
   const validCheck = validateHandle(draftValue, state.userDomain)

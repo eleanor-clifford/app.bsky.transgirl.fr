@@ -5,17 +5,16 @@ import {h, render} from 'preact'
 import {useEffect, useMemo, useRef, useState} from 'preact/hooks'
 
 import arrowBottom from '../../assets/arrowBottom_stroke2_corner0_rounded.svg'
-import logo from '../../assets/logo.svg'
 import {Container} from '../components/container'
 import {Link} from '../components/link'
 import {Post} from '../components/post'
 import {niceDate} from '../utils'
 
-const DEFAULT_POST = 'https://bsky.app/profile/emilyliu.me/post/3jzn6g7ixgq2y'
+const DEFAULT_POST = 'https://app.bsky.transgirl.fr/profile/ellie.clifford.lol/post/3lbvajyodmc23'
 const DEFAULT_URI =
-  'at://did:plc:vjug55kidv6sye7ykr5faxxn/app.bsky.feed.post/3jzn6g7ixgq2y'
+  'at://did:plc:66xhfqluijphqrel4fwhrw6t/app.bsky.feed.post/3lbvajyodmc23'
 
-export const EMBED_SERVICE = 'https://embed.bsky.app'
+export const EMBED_SERVICE = 'https://embed.bsky.transgirl.fr'
 export const EMBED_SCRIPT = `${EMBED_SERVICE}/static/embed.js`
 
 const root = document.getElementById('app')
@@ -49,7 +48,7 @@ function LandingPage() {
           } else {
             try {
               const urlp = new URL(uri)
-              if (!urlp.hostname.endsWith('bsky.app')) {
+              if (!urlp.hostname.endsWith('app.bsky.transgirl.fr')) {
                 throw new Error('Invalid hostname')
               }
               const split = urlp.pathname.slice(1).split('/')
@@ -110,9 +109,9 @@ function LandingPage() {
   return (
     <main className="w-full min-h-screen flex flex-col items-center gap-8 py-14 px-4 md:pt-32">
       <Link
-        href="https://bsky.social/about"
+        href="https://app.bsky.transgirl.fr"
         className="transition-transform hover:scale-110">
-        <img src={logo} className="h-10" />
+        <img src="/logo.svg" className="h-10" />
       </Link>
 
       <h1 className="text-4xl font-bold text-center">Embed a Bluesky Post</h1>
@@ -242,7 +241,7 @@ function Snippet({thread}: {thread: AppBskyFeedDefs.ThreadViewPost}) {
 }
 
 function toShareUrl(path: string) {
-  return `https://bsky.app${path}?ref_src=embed`
+  return `https://app.bsky.transgirl.fr${path}?ref_src=embed`
 }
 
 /**

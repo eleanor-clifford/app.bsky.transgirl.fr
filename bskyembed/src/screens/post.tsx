@@ -3,7 +3,6 @@ import '../index.css'
 import {AppBskyFeedDefs, AtpAgent} from '@atproto/api'
 import {h, render} from 'preact'
 
-import logo from '../../assets/logo.svg'
 import {Container} from '../components/container'
 import {Link} from '../components/link'
 import {Post} from '../components/post'
@@ -52,7 +51,7 @@ function PwiOptOut({thread}: {thread: AppBskyFeedDefs.ThreadViewPost}) {
       <Link
         href={href}
         className="transition-transform hover:scale-110 absolute top-4 right-4">
-        <img src={logo} className="h-6" />
+        <img src="/logo.svg" className="h-6" />
       </Link>
       <div className="w-full py-12 gap-4 flex flex-col items-center">
         <p className="max-w-80 text-center w-full text-textLight">
@@ -71,11 +70,11 @@ function PwiOptOut({thread}: {thread: AppBskyFeedDefs.ThreadViewPost}) {
 
 function ErrorMessage() {
   return (
-    <Container href="https://bsky.app/">
+    <Container href="https://app.bsky.transgirl.fr/">
       <Link
-        href="https://bsky.app/"
+        href="https://app.bsky.transgirl.fr/"
         className="transition-transform hover:scale-110 absolute top-4 right-4">
-        <img src={logo} className="h-6" />
+        <img src="/logo.svg" className="h-6" />
       </Link>
       <p className="my-16 text-center w-full text-textLight">
         Post not found, it may have been deleted.

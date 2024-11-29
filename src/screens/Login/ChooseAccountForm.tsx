@@ -3,7 +3,6 @@ import {View} from 'react-native'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {SessionAccount, useSession, useSessionApi} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
@@ -46,10 +45,6 @@ export const ChooseAccountForm = ({
       try {
         setPendingDid(account.did)
         await resumeSession(account)
-        logEvent('account:loggedIn', {
-          logContext: 'ChooseAccountForm',
-          withPassword: false,
-        })
         Toast.show(_(msg`Signed in as @${account.handle}`))
       } catch (e: any) {
         logger.error('choose account: initSession failed', {

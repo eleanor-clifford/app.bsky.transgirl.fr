@@ -4,7 +4,6 @@ import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {useQuery} from '@tanstack/react-query'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {capitalize} from '#/lib/strings/capitalize'
 import {logger} from '#/logger'
 import {useAgent} from '#/state/session'
@@ -105,10 +104,6 @@ export function StepInterests() {
         selectedInterests: interests,
       })
       dispatch({type: 'next'})
-      logEvent('onboarding:interests:nextPressed', {
-        selectedInterests: interests,
-        selectedInterestsLength: interests.length,
-      })
     } catch (e: any) {
       logger.info(`onboading: error saving interests`)
       logger.error(e)

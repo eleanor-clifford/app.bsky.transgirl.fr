@@ -9,11 +9,9 @@ import {useQueryClient} from '@tanstack/react-query'
 import {ComposeIcon2} from '#/lib/icons'
 import {getRootNavigation, getTabState, TabState} from '#/lib/routes/helpers'
 import {AllNavigatorParams} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {s} from '#/lib/styles'
 import {isNative} from '#/platform/detection'
 import {listenSoftReset} from '#/state/events'
-import {FeedFeedbackProvider, useFeedFeedback} from '#/state/feed-feedback'
 import {RQKEY as FEED_RQKEY} from '#/state/queries/post-feed'
 import {FeedDescriptor, FeedParams} from '#/state/queries/post-feed'
 import {truncateAndInvalidate} from '#/state/queries/util'
@@ -54,7 +52,6 @@ export function FeedPage({
   const [isScrolledDown, setIsScrolledDown] = React.useState(false)
   const setMinimalShellMode = useSetMinimalShellMode()
   const headerOffset = useHeaderOffset()
-  const feedFeedback = useFeedFeedback(feed, hasSession)
   const scrollElRef = React.useRef<ListMethods>(null)
   const [hasNew, setHasNew] = React.useState(false)
 
@@ -74,11 +71,6 @@ export function FeedPage({
       scrollToTop()
       truncateAndInvalidate(queryClient, FEED_RQKEY(feed))
       setHasNew(false)
-      logEvent('feed:refresh', {
-        feedType: feed.split('|')[0],
-        feedUrl: feed,
-        reason: 'soft-reset',
-      })
     }
   }, [navigation, isPageFocused, scrollToTop, queryClient, feed, setHasNew])
 
@@ -98,33 +90,26 @@ export function FeedPage({
     scrollToTop()
     truncateAndInvalidate(queryClient, FEED_RQKEY(feed))
     setHasNew(false)
-    logEvent('feed:refresh', {
-      feedType: feed.split('|')[0],
-      feedUrl: feed,
-      reason: 'load-latest',
-    })
   }, [scrollToTop, feed, queryClient, setHasNew])
 
   return (
     <View testID={testID} style={s.h100pct}>
       <MainScrollProvider>
-        <FeedFeedbackProvider value={feedFeedback}>
-          <Feed
-            testID={testID ? `${testID}-feed` : undefined}
-            enabled={isPageFocused}
-            feed={feed}
-            feedParams={feedParams}
-            pollInterval={POLL_FREQ}
-            disablePoll={hasNew}
-            scrollElRef={scrollElRef}
-            onScrolledDownChange={setIsScrolledDown}
-            onHasNew={setHasNew}
-            renderEmptyState={renderEmptyState}
-            renderEndOfFeed={renderEndOfFeed}
-            headerOffset={headerOffset}
-            savedFeedConfig={savedFeedConfig}
-          />
-        </FeedFeedbackProvider>
+        <Feed
+          testID={testID ? `${testID}-feed` : undefined}
+          enabled={isPageFocused}
+          feed={feed}
+          feedParams={feedParams}
+          pollInterval={POLL_FREQ}
+          disablePoll={hasNew}
+          scrollElRef={scrollElRef}
+          onScrolledDownChange={setIsScrolledDown}
+          onHasNew={setHasNew}
+          renderEmptyState={renderEmptyState}
+          renderEndOfFeed={renderEndOfFeed}
+          headerOffset={headerOffset}
+          savedFeedConfig={savedFeedConfig}
+        />
       </MainScrollProvider>
       {(isScrolledDown || hasNew) && (
         <LoadLatestBtn

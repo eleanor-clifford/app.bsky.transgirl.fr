@@ -12,8 +12,8 @@ import (
 var log = logging.Logger("embedr")
 
 func init() {
-	logging.SetAllLoggers(logging.LevelDebug)
-	//logging.SetAllLoggers(logging.LevelWarn)
+	//logging.SetAllLoggers(logging.LevelDebug)
+	logging.SetAllLoggers(logging.LevelWarn)
 }
 
 func main() {
@@ -43,7 +43,7 @@ func run(args []string) {
 					Name:     "http-address",
 					Usage:    "Specify the local IP/port to bind to",
 					Required: false,
-					Value:    ":8100",
+					Value:    ":8200",
 					EnvVars:  []string{"HTTP_ADDRESS"},
 				},
 				&cli.BoolFlag{

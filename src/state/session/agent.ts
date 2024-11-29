@@ -8,12 +8,10 @@ import {
   PUBLIC_BSKY_SERVICE,
   TIMELINE_SAVED_FEED,
 } from '#/lib/constants'
-import {tryFetchGates} from '#/lib/statsig/statsig'
 import {getAge} from '#/lib/strings/time'
 import {logger} from '#/logger'
 import {snoozeEmailConfirmationPrompt} from '#/state/shell/reminders'
 import {emitNetworkConfirmed, emitNetworkLost} from '../events'
-import {addSessionErrorLog} from './logging'
 import {
   configureModerationForAccount,
   configureModerationForGuest,
@@ -38,7 +36,6 @@ export async function createAgentAndResume(
   if (storedAccount.pdsUrl) {
     agent.sessionManager.pdsUrl = new URL(storedAccount.pdsUrl)
   }
-  const gates = tryFetchGates(storedAccount.did, 'prefer-low-latency')
   const moderation = configureModerationForAccount(agent, storedAccount)
   const prevSession: AtpSessionData = sessionAccountToSession(storedAccount)
   if (isSessionExpired(storedAccount)) {
@@ -60,7 +57,7 @@ export async function createAgentAndResume(
     }
   }
 
-  return agent.prepare(gates, moderation, onSessionChange)
+  return agent.prepare(moderation, onSessionChange)
 }
 
 export async function createAgentAndLogin(
@@ -85,9 +82,8 @@ export async function createAgentAndLogin(
   await agent.login({identifier, password, authFactorToken})
 
   const account = agentToSessionAccountOrThrow(agent)
-  const gates = tryFetchGates(account.did, 'prefer-fresh-gates')
   const moderation = configureModerationForAccount(agent, account)
-  return agent.prepare(gates, moderation, onSessionChange)
+  return agent.prepare(moderation, onSessionChange)
 }
 
 export async function createAgentAndCreateAccount(
@@ -126,7 +122,6 @@ export async function createAgentAndCreateAccount(
     verificationCode,
   })
   const account = agentToSessionAccountOrThrow(agent)
-  const gates = tryFetchGates(account.did, 'prefer-fresh-gates')
   const moderation = configureModerationForAccount(agent, account)
 
   // Not awaited so that we can still get into onboarding.
@@ -174,7 +169,7 @@ export async function createAgentAndCreateAccount(
     logger.error(e, {context: `session: failed snoozeEmailConfirmationPrompt`})
   }
 
-  return agent.prepare(gates, moderation, onSessionChange)
+  return agent.prepare(moderation, onSessionChange)
 }
 
 export function agentToSessionAccountOrThrow(agent: BskyAgent): SessionAccount {
@@ -263,7 +258,6 @@ class BskyAppAgent extends BskyAgent {
 
   async prepare(
     // Not awaited in the calling code so we can delay blocking on them.
-    gates: Promise<void>,
     moderation: Promise<void>,
     onSessionChange: (
       agent: BskyAgent,
@@ -272,7 +266,7 @@ class BskyAppAgent extends BskyAgent {
     ) => void,
   ) {
     // There's nothing else left to do, so block on them here.
-    await Promise.all([gates, moderation])
+    await Promise.all([moderation])
 
     // Now the agent is ready.
     const account = agentToSessionAccountOrThrow(this)
@@ -286,9 +280,6 @@ class BskyAppAgent extends BskyAgent {
       }
 
       onSessionChange(this, account.did, event)
-      if (event !== 'create' && event !== 'update') {
-        addSessionErrorLog(account.did, event)
-      }
     }
     return {account, agent: this}
   }

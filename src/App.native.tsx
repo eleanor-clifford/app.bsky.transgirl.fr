@@ -1,5 +1,4 @@
 import 'react-native-url-polyfill/auto'
-import '#/lib/sentry' // must be near top
 import '#/view/icons'
 
 import React, {useEffect, useState} from 'react'
@@ -16,11 +15,6 @@ import {useLingui} from '@lingui/react'
 
 import {KeyboardControllerProvider} from '#/lib/hooks/useEnableKeyboardController'
 import {QueryProvider} from '#/lib/react-query'
-import {
-  initialize,
-  Provider as StatsigProvider,
-  tryFetchGates,
-} from '#/lib/statsig/statsig'
 import {s} from '#/lib/styles'
 import {ThemeProvider} from '#/lib/ThemeContext'
 import I18nProvider from '#/locale/i18nProvider'
@@ -99,8 +93,8 @@ function InnerApp() {
         if (account) {
           await resumeSession(account)
         } else {
-          await initialize()
-          await tryFetchGates(undefined, 'prefer-fresh-gates')
+          //await initialize()
+          //await tryFetchGates(undefined, 'prefer-fresh-gates')
         }
       } catch (e) {
         logger.error(`session: resume failed`, {message: e})
@@ -132,35 +126,33 @@ function InnerApp() {
                 key={currentAccount?.did}>
                 <QueryProvider currentDid={currentAccount?.did}>
                   <ComposerProvider>
-                    <StatsigProvider>
-                      <MessagesProvider>
-                        {/* LabelDefsProvider MUST come before ModerationOptsProvider */}
-                        <LabelDefsProvider>
-                          <ModerationOptsProvider>
-                            <LoggedOutViewProvider>
-                              <SelectedFeedProvider>
-                                <HiddenRepliesProvider>
-                                  <UnreadNotifsProvider>
-                                    <BackgroundNotificationPreferencesProvider>
-                                      <MutedThreadsProvider>
-                                        <ProgressGuideProvider>
-                                          <GestureHandlerRootView
-                                            style={s.h100pct}>
-                                            <TestCtrls />
-                                            <Shell />
-                                            <NuxDialogs />
-                                          </GestureHandlerRootView>
-                                        </ProgressGuideProvider>
-                                      </MutedThreadsProvider>
-                                    </BackgroundNotificationPreferencesProvider>
-                                  </UnreadNotifsProvider>
-                                </HiddenRepliesProvider>
-                              </SelectedFeedProvider>
-                            </LoggedOutViewProvider>
-                          </ModerationOptsProvider>
-                        </LabelDefsProvider>
-                      </MessagesProvider>
-                    </StatsigProvider>
+                    <MessagesProvider>
+                      {/* LabelDefsProvider MUST come before ModerationOptsProvider */}
+                      <LabelDefsProvider>
+                        <ModerationOptsProvider>
+                          <LoggedOutViewProvider>
+                            <SelectedFeedProvider>
+                              <HiddenRepliesProvider>
+                                <UnreadNotifsProvider>
+                                  <BackgroundNotificationPreferencesProvider>
+                                    <MutedThreadsProvider>
+                                      <ProgressGuideProvider>
+                                        <GestureHandlerRootView
+                                          style={s.h100pct}>
+                                          <TestCtrls />
+                                          <Shell />
+                                          <NuxDialogs />
+                                        </GestureHandlerRootView>
+                                      </ProgressGuideProvider>
+                                    </MutedThreadsProvider>
+                                  </BackgroundNotificationPreferencesProvider>
+                                </UnreadNotifsProvider>
+                              </HiddenRepliesProvider>
+                            </SelectedFeedProvider>
+                          </LoggedOutViewProvider>
+                        </ModerationOptsProvider>
+                      </LabelDefsProvider>
+                    </MessagesProvider>
                   </ComposerProvider>
                 </QueryProvider>
               </React.Fragment>

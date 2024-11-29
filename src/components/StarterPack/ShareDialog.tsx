@@ -8,7 +8,6 @@ import {useLingui} from '@lingui/react'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {saveImageToMediaLibrary} from '#/lib/media/manip'
 import {shareUrl} from '#/lib/sharing'
-import {logEvent} from '#/lib/statsig/statsig'
 import {getStarterPackOgCard} from '#/lib/strings/starter-pack'
 import {logger} from '#/logger'
 import {isNative, isWeb} from '#/platform/detection'
@@ -53,10 +52,6 @@ function ShareDialogInner({
   const onShareLink = async () => {
     if (!link) return
     shareUrl(link)
-    logEvent('starterPack:share', {
-      starterPack: starterPack.uri,
-      shareType: 'link',
-    })
     control.close()
   }
 

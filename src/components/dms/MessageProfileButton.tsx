@@ -7,7 +7,6 @@ import {useNavigation} from '@react-navigation/native'
 
 import {useEmail} from '#/lib/hooks/useEmail'
 import {NavigationProp} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {useMaybeConvoForUser} from '#/state/queries/messages/get-convo-for-members'
 import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonIcon} from '#/components/Button'
@@ -38,11 +37,6 @@ export function MessageProfileButton({
       verifyEmailControl.open()
       return
     }
-
-    if (convo && !convo.lastMessage) {
-      logEvent('chat:create', {logContext: 'ProfileHeader'})
-    }
-    logEvent('chat:open', {logContext: 'ProfileHeader'})
 
     navigation.navigate('MessagesConversation', {conversation: convo.id})
   }, [needsEmailVerification, verifyEmailControl, convo, navigation])

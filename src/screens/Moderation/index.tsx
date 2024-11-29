@@ -364,10 +364,10 @@ export function ModerationScreenInner({
                         to=""
                         onPress={evt => {
                           evt.preventDefault()
-                          Linking.openURL('https://bsky.app/')
+                          Linking.openURL('https://app.bsky.transgirl.fr/')
                           return false
                         }}>
-                        bsky.app
+                        app.bsky.transgirl.fr
                       </InlineLinkText>
                       .
                     </Trans>

@@ -30,7 +30,6 @@ import {
   SearchTabNavigatorParams,
 } from '#/lib/routes/types'
 import {RouteParams, State} from '#/lib/routes/types'
-import {attachRouteToLogEvents, logEvent} from '#/lib/statsig/statsig'
 import {bskyTitle} from '#/lib/strings/headings'
 import {isNative, isWeb} from '#/platform/detection'
 import {useModalControls} from '#/state/modals'
@@ -619,7 +618,7 @@ const FlatNavigator = () => {
 
 const LINKING = {
   // TODO figure out what we are going to use
-  prefixes: ['bsky://', 'bluesky://', 'https://bsky.app'],
+  prefixes: ['bsky://', 'bluesky://', 'https://app.bsky.transgirl.fr'],
 
   getPathFromState(state: State) {
     // find the current node in the navigation tree
@@ -698,12 +697,8 @@ function RoutesContainer({children}: React.PropsWithChildren<{}>) {
       theme={theme}
       onStateChange={() => {
         const routeName = getCurrentRouteName()
-        if (routeName === 'Notifications') {
-          logEvent('router:navigate:notifications', {})
-        }
       }}
       onReady={() => {
-        attachRouteToLogEvents(getCurrentRouteName)
         logModuleInitTime()
         onReady()
       }}>
@@ -825,20 +820,6 @@ function logModuleInitTime() {
     performance.now() - global.__BUNDLE_START_TIME__,
   )
   console.log(`Time to first paint: ${initMs} ms`)
-  logEvent('init', {
-    initMs,
-  })
-
-  if (isWeb) {
-    const referrerInfo = Referrer.getReferrerInfo()
-    if (referrerInfo && referrerInfo.hostname !== 'bsky.app') {
-      logEvent('deepLink:referrerReceived', {
-        to: window.location.href,
-        referrer: referrerInfo?.referrer,
-        hostname: referrerInfo?.hostname,
-      })
-    }
-  }
 
   if (__DEV__) {
     // This log is noisy, so keep false committed

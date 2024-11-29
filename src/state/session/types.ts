@@ -1,4 +1,3 @@
-import {LogEvents} from '#/lib/statsig/statsig'
 import {PersistedAccount} from '#/state/persisted'
 
 export type SessionAccount = PersistedAccount
@@ -27,14 +26,9 @@ export type SessionApiContext = {
       password: string
       authFactorToken?: string | undefined
     },
-    logContext: LogEvents['account:loggedIn']['logContext'],
   ) => Promise<void>
-  logoutCurrentAccount: (
-    logContext: LogEvents['account:loggedOut']['logContext'],
-  ) => void
-  logoutEveryAccount: (
-    logContext: LogEvents['account:loggedOut']['logContext'],
-  ) => void
+  logoutCurrentAccount: () => void
+  logoutEveryAccount: () => void
   resumeSession: (account: SessionAccount) => Promise<void>
   removeAccount: (account: SessionAccount) => void
 }

@@ -8,7 +8,6 @@ import {h} from 'preact'
 
 import replyIcon from '../../assets/bubble_filled_stroke2_corner2_rounded.svg'
 import likeIcon from '../../assets/heart2_filled_stroke2_corner0_rounded.svg'
-import logo from '../../assets/logo.svg'
 import repostIcon from '../../assets/repost_stroke2_corner2_rounded.svg'
 import {CONTENT_LABELS} from '../labels'
 import {getRkey, niceDate, prettyNumber} from '../utils'
@@ -61,7 +60,7 @@ export function Post({thread}: Props) {
           <Link
             href={href}
             className="transition-transform hover:scale-110 shrink-0 self-start">
-            <img src={logo} className="h-8" />
+            <img src="/logo.svg" className="h-8" />
           </Link>
         </div>
         <PostContent record={record} />
@@ -133,8 +132,7 @@ function PostContent({record}: {record: AppBskyFeedPost.Record | null}) {
           href={segment.link.uri}
           className="text-blue-400 hover:underline"
           disableTracking={
-            !segment.link.uri.startsWith('https://bsky.app') &&
-            !segment.link.uri.startsWith('https://go.bsky.app')
+            !segment.link.uri.startsWith('https://app.bsky.transgirl.fr')
           }>
           {segment.text}
         </Link>,

@@ -14,7 +14,6 @@ import {
   TIMELINE_SAVED_FEED,
 } from '#/lib/constants'
 import {useRequestNotificationsPermission} from '#/lib/notifications/notifications'
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {useSetHasCheckedForStarterPack} from '#/state/preferences/used-starter-packs'
 import {getAllListMembers} from '#/state/queries/list-members'
@@ -158,13 +157,6 @@ export function StepFinished() {
             return existing
           })
 
-          logEvent('onboarding:finished:avatarResult', {
-            avatarResult: profileStepResults.isCreatedAvatar
-              ? 'created'
-              : profileStepResults.image
-              ? 'uploaded'
-              : 'default',
-          })
         })(),
         requestNotificationsPermission('AfterOnboarding'),
       ])
@@ -193,23 +185,6 @@ export function StepFinished() {
     startProgressGuide('like-10-and-follow-7')
     dispatch({type: 'finish'})
     onboardDispatch({type: 'finish'})
-    logEvent('onboarding:finished:nextPressed', {
-      usedStarterPack: Boolean(starterPack),
-      starterPackName: AppBskyGraphStarterpack.isRecord(starterPack?.record)
-        ? starterPack.record.name
-        : undefined,
-      starterPackCreator: starterPack?.creator.did,
-      starterPackUri: starterPack?.uri,
-      profilesFollowed: listItems?.length ?? 0,
-      feedsPinned: starterPack?.feeds?.length ?? 0,
-    })
-    if (starterPack && listItems?.length) {
-      logEvent('starterPack:followAll', {
-        logContext: 'Onboarding',
-        starterPack: starterPack.uri,
-        count: listItems?.length,
-      })
-    }
   }, [
     queryClient,
     agent,

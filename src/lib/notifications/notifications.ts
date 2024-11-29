@@ -3,7 +3,6 @@ import * as Notifications from 'expo-notifications'
 import {getBadgeCountAsync, setBadgeCountAsync} from 'expo-notifications'
 import {BskyAgent} from '@atproto/api'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {devicePlatform, isAndroid, isNative} from '#/platform/detection'
 import {SessionAccount, useAgent, useSession} from '#/state/session'
@@ -109,10 +108,6 @@ export function useRequestNotificationsPermission() {
     }
 
     const res = await Notifications.requestPermissionsAsync()
-    logEvent('notifications:request', {
-      context: context,
-      status: res.status,
-    })
 
     if (res.granted) {
       // This will fire a pushTokenEvent, which will handle registration of the token

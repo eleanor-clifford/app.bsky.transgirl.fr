@@ -20,7 +20,6 @@ import {HITSLOP_20} from '#/lib/constants'
 import {isBlockedOrBlocking, isMuted} from '#/lib/moderation/blocked-and-muted'
 import {makeProfileLink, makeStarterPackLink} from '#/lib/routes/links'
 import {CommonNavigatorParams, NavigationProp} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {cleanError} from '#/lib/strings/errors'
 import {getStarterPackOgCard} from '#/lib/strings/starter-pack'
 import {logger} from '#/logger'
@@ -190,12 +189,6 @@ function StarterPackScreenLoaded({
   const shortenLink = useShortenLink()
   const [link, setLink] = React.useState<string>()
   const [imageLoaded, setImageLoaded] = React.useState(false)
-
-  React.useEffect(() => {
-    logEvent('starterPack:opened', {
-      starterPack: starterPack.uri,
-    })
-  }, [starterPack.uri])
 
   const onOpenShareDialog = React.useCallback(() => {
     const rkey = new AtUri(starterPack.uri).rkey
@@ -380,11 +373,6 @@ function Header({
     })
     Toast.show(_(msg`All accounts have been followed!`))
     captureAction(ProgressGuideAction.Follow, dids.length)
-    logEvent('starterPack:followAll', {
-      logContext: 'StarterPackProfilesList',
-      starterPack: starterPack.uri,
-      count: dids.length,
-    })
   }
 
   if (!AppBskyGraphStarterpack.isRecord(record)) {
@@ -512,7 +500,6 @@ function OverflowMenu({
     error: deleteError,
   } = useDeleteStarterPackMutation({
     onSuccess: () => {
-      logEvent('starterPack:delete', {})
       deleteDialogControl.close(() => {
         if (navigation.canGoBack()) {
           navigation.popToTop()
@@ -538,7 +525,6 @@ function OverflowMenu({
       rkey: routeParams.rkey,
       listUri: starterPack.list.uri,
     })
-    logEvent('starterPack:delete', {})
   }
 
   return (

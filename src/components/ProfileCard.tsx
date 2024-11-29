@@ -9,7 +9,6 @@ import {
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {LogEvents} from '#/lib/statsig/statsig'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {useProfileShadow} from '#/state/cache/profile-shadow'
@@ -29,18 +28,15 @@ import {Text} from '#/components/Typography'
 export function Default({
   profile,
   moderationOpts,
-  logContext = 'ProfileCard',
 }: {
   profile: AppBskyActorDefs.ProfileViewDetailed
   moderationOpts: ModerationOpts
-  logContext?: 'ProfileCard' | 'StarterPackProfilesList'
 }) {
   return (
     <Link profile={profile}>
       <Card
         profile={profile}
         moderationOpts={moderationOpts}
-        logContext={logContext}
       />
     </Link>
   )
@@ -49,11 +45,9 @@ export function Default({
 export function Card({
   profile,
   moderationOpts,
-  logContext = 'ProfileCard',
 }: {
   profile: AppBskyActorDefs.ProfileViewDetailed
   moderationOpts: ModerationOpts
-  logContext?: 'ProfileCard' | 'StarterPackProfilesList'
 }) {
   const moderation = moderateProfile(profile, moderationOpts)
 
@@ -65,7 +59,6 @@ export function Card({
         <FollowButton
           profile={profile}
           moderationOpts={moderationOpts}
-          logContext={logContext}
         />
       </Header>
 
@@ -283,8 +276,6 @@ export function DescriptionPlaceholder({
 export type FollowButtonProps = {
   profile: AppBskyActorDefs.ProfileViewBasic
   moderationOpts: ModerationOpts
-  logContext: LogEvents['profile:follow']['logContext'] &
-    LogEvents['profile:unfollow']['logContext']
 } & Partial<ButtonProps>
 
 export function FollowButton(props: FollowButtonProps) {
@@ -296,7 +287,6 @@ export function FollowButton(props: FollowButtonProps) {
 export function FollowButtonInner({
   profile: profileUnshadowed,
   moderationOpts,
-  logContext,
   ...rest
 }: FollowButtonProps) {
   const {_} = useLingui()
@@ -304,7 +294,6 @@ export function FollowButtonInner({
   const moderation = moderateProfile(profile, moderationOpts)
   const [queueFollow, queueUnfollow] = useProfileFollowMutationQueue(
     profile,
-    logContext,
   )
   const isRound = Boolean(rest.shape && rest.shape === 'round')
 

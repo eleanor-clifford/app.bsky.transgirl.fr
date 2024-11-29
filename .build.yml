@@ -1,0 +1,25 @@
+image: debian/trixie
+packages:
+  - node-corepack
+  - golang
+  - screen
+sources:
+  - https://git.sr.ht/~ecc/app.bsky.transgirl.fr
+tasks:
+  - yarn: |
+      cd app.bsky.transgirl.fr
+      corepack yarn install
+      corepack yarn build-web
+  - bskyweb: |
+      cd app.bsky.transgirl.fr/bskyweb
+      GOARCH=arm64 go mod tidy
+      GOARCH=arm64 go build -v -tags -timetzdelta -o ../../bskyweb ./cmd/bskyweb
+  - bskyembed: |
+      cd app.bsky.transgirl.fr/bskyembed
+      corepack yarn install
+      corepack yarn build
+      cd dist
+      tar -cvzf ../../../bskyembed.tar.gz .
+artifacts:
+  - bskyweb
+  - bskyembed.tar.gz

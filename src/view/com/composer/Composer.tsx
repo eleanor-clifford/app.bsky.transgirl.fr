@@ -68,7 +68,6 @@ import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
 import {usePalette} from '#/lib/hooks/usePalette'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {mimeToExt} from '#/lib/media/video/util'
-import {logEvent} from '#/lib/statsig/statsig'
 import {cleanError} from '#/lib/strings/errors'
 import {colors, s} from '#/lib/styles'
 import {logger} from '#/logger'
@@ -419,26 +418,8 @@ export const ComposePost = ({
       if (postUri) {
         let index = 0
         for (let post of thread.posts) {
-          logEvent('post:create', {
-            imageCount:
-              post.embed.media?.type === 'images'
-                ? post.embed.media.images.length
-                : 0,
-            isReply: index > 0 || !!replyTo,
-            isPartOfThread: thread.posts.length > 1,
-            hasLink: !!post.embed.link,
-            hasQuote: !!post.embed.quote,
-            langs: langPrefs.postLanguage,
-            logContext: 'Composer',
-          })
           index++
         }
-      }
-      if (thread.posts.length > 1) {
-        logEvent('thread:create', {
-          postCount: thread.posts.length,
-          isReply: !!replyTo,
-        })
       }
     }
     if (postUri && !replyTo) {
