@@ -5,7 +5,6 @@ import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
 import {PressableScale} from '#/lib/custom-animations/PressableScale'
-import {logEvent} from '#/lib/statsig/statsig'
 import {
   useLoggedOutView,
   useLoggedOutViewControls,
@@ -94,11 +93,9 @@ export function LoggedOut({onDismiss}: {onDismiss?: () => void}) {
           <SplashScreen
             onPressSignin={() => {
               setScreenState(ScreenState.S_Login)
-              logEvent('splash:signInPressed', {})
             }}
             onPressCreateAccount={() => {
               setScreenState(ScreenState.S_CreateAccount)
-              logEvent('splash:createAccountPressed', {})
             }}
           />
         ) : undefined}

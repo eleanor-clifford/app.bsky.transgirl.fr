@@ -26,7 +26,6 @@ import {sanitizeHandle} from '#/lib/strings/handles'
 import {countLines} from '#/lib/strings/helpers'
 import {s} from '#/lib/styles'
 import {POST_TOMBSTONE, Shadow, usePostShadow} from '#/state/cache/post-shadow'
-import {useFeedFeedbackContext} from '#/state/feed-feedback'
 import {precacheProfile} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
 import {useComposerControls} from '#/state/shell/composer'
@@ -157,14 +156,8 @@ let FeedItemInner = ({
     const urip = new AtUri(post.uri)
     return makeProfileLink(post.author, 'post', urip.rkey)
   }, [post.uri, post.author])
-  const {sendInteraction} = useFeedFeedbackContext()
 
   const onPressReply = React.useCallback(() => {
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#interactionReply',
-      feedContext,
-    })
     openComposer({
       replyTo: {
         uri: post.uri,
@@ -175,40 +168,15 @@ let FeedItemInner = ({
         moderation,
       },
     })
-  }, [post, record, openComposer, moderation, sendInteraction, feedContext])
+  }, [post, record, openComposer, moderation])
 
-  const onOpenAuthor = React.useCallback(() => {
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#clickthroughAuthor',
-      feedContext,
-    })
-  }, [sendInteraction, post, feedContext])
-
-  const onOpenReposter = React.useCallback(() => {
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#clickthroughReposter',
-      feedContext,
-    })
-  }, [sendInteraction, post, feedContext])
-
-  const onOpenEmbed = React.useCallback(() => {
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#clickthroughEmbed',
-      feedContext,
-    })
-  }, [sendInteraction, post, feedContext])
+  const onOpenAuthor = React.useCallback(() => {}, [])
+  const onOpenReposter = React.useCallback(() => {}, [])
+  const onOpenEmbed = React.useCallback(() => {}, [])
 
   const onBeforePress = React.useCallback(() => {
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#clickthroughItem',
-      feedContext,
-    })
     precacheProfile(queryClient, post.author)
-  }, [queryClient, post, sendInteraction, feedContext])
+  }, [queryClient, post])
 
   const outerStyles = [
     styles.outer,

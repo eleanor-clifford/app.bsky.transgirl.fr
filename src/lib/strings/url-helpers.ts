@@ -7,8 +7,9 @@ import {isInvalidHandle} from '#/lib/strings/handles'
 import {startUriToStarterPackUri} from '#/lib/strings/starter-pack'
 import {logger} from '#/logger'
 
-export const BSKY_APP_HOST = 'https://bsky.app'
+export const BSKY_APP_HOST = 'https://app.bsky.transgirl.fr'
 const BSKY_TRUSTED_HOSTS = [
+  'app\\.bsky\\.transgirl\\.fr',
   'bsky\\.app',
   'bsky\\.social',
   'blueskyweb\\.xyz',
@@ -51,7 +52,7 @@ export function makeRecordUri(
 export function toNiceDomain(url: string): string {
   try {
     const urlp = new URL(url)
-    if (`https://${urlp.host}` === BSKY_SERVICE) {
+    if (`https://${urlp.host}` === "https://bsky.social") {
       return 'Bluesky Social'
     }
     return urlp.host ? urlp.host : url
@@ -79,7 +80,7 @@ export function toShortUrl(url: string): string {
 
 export function toShareUrl(url: string): string {
   if (!url.startsWith('https')) {
-    const urlp = new URL('https://bsky.app')
+    const urlp = new URL('https://app.bsky.transgirl.fr')
     urlp.pathname = url
     url = urlp.toString()
   }
@@ -91,7 +92,7 @@ export function toBskyAppUrl(url: string): string {
 }
 
 export function isBskyAppUrl(url: string): boolean {
-  return url.startsWith('https://bsky.app/')
+  return url.startsWith('https://app.bsky.transgirl.fr/')
 }
 
 export function isRelativeUrl(url: string): boolean {
@@ -100,7 +101,7 @@ export function isRelativeUrl(url: string): boolean {
 
 export function isBskyRSSUrl(url: string): boolean {
   return (
-    (url.startsWith('https://bsky.app/') || isRelativeUrl(url)) &&
+    (url.startsWith('https://app.bsky.transgirl.fr/') || isRelativeUrl(url)) &&
     /\/rss\/?$/.test(url)
   )
 }

@@ -8,7 +8,6 @@ import {AppBskyGraphDefs, AppBskyGraphStarterpack} from '@atproto/api'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {isNative, isWeb} from '#/platform/detection'
 import * as Toast from '#/view/com/util/Toast'
@@ -95,11 +94,6 @@ export function QrCodeDialog({
         link.click()
       }
 
-      logEvent('starterPack:share', {
-        starterPack: starterPack.uri,
-        shareType: 'qrcode',
-        qrShareType: 'save',
-      })
       setIsProcessing(false)
       Toast.show(
         isWeb
@@ -120,11 +114,6 @@ export function QrCodeDialog({
         navigator.clipboard.write([item])
       })
 
-      logEvent('starterPack:share', {
-        starterPack: starterPack.uri,
-        shareType: 'qrcode',
-        qrShareType: 'copy',
-      })
       Toast.show(_(msg`QR code copied to your clipboard!`))
       setIsProcessing(false)
       control.close()
@@ -134,15 +123,7 @@ export function QrCodeDialog({
   const onSharePress = async () => {
     ref.current?.capture?.().then(async (uri: string) => {
       control.close(() => {
-        Sharing.shareAsync(uri, {mimeType: 'image/png', UTI: 'image/png'}).then(
-          () => {
-            logEvent('starterPack:share', {
-              starterPack: starterPack.uri,
-              shareType: 'qrcode',
-              qrShareType: 'share',
-            })
-          },
-        )
+        Sharing.shareAsync(uri, {mimeType: 'image/png', UTI: 'image/png'})
       })
     })
   }

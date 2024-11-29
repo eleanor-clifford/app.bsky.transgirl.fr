@@ -14,7 +14,6 @@ import {compressIfNeeded} from '#/lib/media/manip'
 import {openCropper} from '#/lib/media/picker'
 import {getDataUriSize} from '#/lib/media/util'
 import {useRequestNotificationsPermission} from '#/lib/notifications/notifications'
-import {logEvent, useGate} from '#/lib/statsig/statsig'
 import {isNative, isWeb} from '#/platform/detection'
 import {
   DescriptionText,
@@ -69,7 +68,6 @@ export function StepProfile() {
   const t = useTheme()
   const {gtMobile} = useBreakpoints()
   const {requestPhotoAccessIfNeeded} = usePhotoLibraryPermission()
-  const gate = useGate()
   const requestNotificationsPermission = useRequestNotificationsPermission()
 
   const creatorControl = Dialog.useDialogControl()
@@ -88,7 +86,7 @@ export function StepProfile() {
 
   React.useEffect(() => {
     requestNotificationsPermission('StartOnboarding')
-  }, [gate, requestNotificationsPermission])
+  }, [requestNotificationsPermission])
 
   const sheetWrapper = useSheetWrapper()
   const openPicker = React.useCallback(
@@ -153,7 +151,6 @@ export function StepProfile() {
     }
 
     dispatch({type: 'next'})
-    logEvent('onboarding:profile:nextPressed', {})
   }, [avatar, dispatch])
 
   const onDoneCreating = React.useCallback(() => {

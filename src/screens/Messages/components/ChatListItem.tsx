@@ -13,7 +13,6 @@ import {useLingui} from '@lingui/react'
 import {GestureActionView} from '#/lib/custom-animations/GestureActionView'
 import {useHaptics} from '#/lib/haptics'
 import {decrementBadgeCount} from '#/lib/notifications/notifications'
-import {logEvent} from '#/lib/statsig/statsig'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {
   postUriToRelativePath,
@@ -193,10 +192,8 @@ function ChatListItemReady({
         e.preventDefault()
         menuControl.open()
         return false
-      } else {
-        logEvent('chat:open', {logContext: 'ChatsList'})
       }
-    },
+  },
     [convo.unreadCount, isDeletedAccount, menuControl],
   )
 

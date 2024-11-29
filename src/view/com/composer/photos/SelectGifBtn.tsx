@@ -3,7 +3,6 @@ import {Keyboard} from 'react-native'
 import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {Gif} from '#/state/queries/tenor'
 import {atoms as a, useTheme} from '#/alf'
 import {Button} from '#/components/Button'
@@ -22,7 +21,6 @@ export function SelectGifBtn({onClose, onSelectGif, disabled}: Props) {
   const t = useTheme()
 
   const onPressSelectGif = useCallback(async () => {
-    logEvent('composer:gif:open', {})
     Keyboard.dismiss()
     ref.current?.open()
   }, [])

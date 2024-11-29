@@ -19,7 +19,6 @@ import {
 import {uploadBlob} from '#/lib/api'
 import {until} from '#/lib/async/until'
 import {useToggleMutationQueue} from '#/lib/hooks/useToggleMutationQueue'
-import {logEvent, LogEvents, toClout} from '#/lib/statsig/statsig'
 import {Shadow} from '#/state/cache/types'
 import {STALE} from '#/state/queries'
 import {resetProfilePostsQueries} from '#/state/queries/post-feed'
@@ -221,15 +220,13 @@ export function useProfileUpdateMutation() {
 
 export function useProfileFollowMutationQueue(
   profile: Shadow<AppBskyActorDefs.ProfileViewDetailed>,
-  logContext: LogEvents['profile:follow']['logContext'] &
-    LogEvents['profile:follow']['logContext'],
 ) {
   const agent = useAgent()
   const queryClient = useQueryClient()
   const did = profile.did
   const initialFollowingUri = profile.viewer?.following
-  const followMutation = useProfileFollowMutation(logContext, profile)
-  const unfollowMutation = useProfileUnfollowMutation(logContext)
+  const followMutation = useProfileFollowMutation(profile)
+  const unfollowMutation = useProfileUnfollowMutation()
 
   const queueToggle = useToggleMutationQueue({
     initialState: initialFollowingUri,
@@ -293,7 +290,6 @@ export function useProfileFollowMutationQueue(
 }
 
 function useProfileFollowMutation(
-  logContext: LogEvents['profile:follow']['logContext'],
   profile: Shadow<AppBskyActorDefs.ProfileViewDetailed>,
 ) {
   const {currentAccount} = useSession()
@@ -308,26 +304,15 @@ function useProfileFollowMutation(
         ownProfile = findProfileQueryData(queryClient, currentAccount.did)
       }
       captureAction(ProgressGuideAction.Follow)
-      logEvent('profile:follow', {
-        logContext,
-        didBecomeMutual: profile.viewer
-          ? Boolean(profile.viewer.followedBy)
-          : undefined,
-        followeeClout: toClout(profile.followersCount),
-        followerClout: toClout(ownProfile?.followersCount),
-      })
       return await agent.follow(did)
     },
   })
 }
 
-function useProfileUnfollowMutation(
-  logContext: LogEvents['profile:unfollow']['logContext'],
-) {
+function useProfileUnfollowMutation() {
   const agent = useAgent()
   return useMutation<void, Error, {did: string; followUri: string}>({
     mutationFn: async ({followUri}) => {
-      logEvent('profile:unfollow', {logContext})
       return await agent.deleteFollow(followUri)
     },
   })

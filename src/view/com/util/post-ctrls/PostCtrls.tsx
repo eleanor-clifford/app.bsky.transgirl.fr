@@ -26,7 +26,6 @@ import {makeProfileLink} from '#/lib/routes/links'
 import {shareUrl} from '#/lib/sharing'
 import {toShareUrl} from '#/lib/strings/url-helpers'
 import {Shadow} from '#/state/cache/types'
-import {useFeedFeedbackContext} from '#/state/feed-feedback'
 import {
   usePostLikeMutationQueue,
   usePostRepostMutationQueue,
@@ -82,7 +81,6 @@ let PostCtrls = ({
   )
   const requireAuth = useRequireAuth()
   const loggedOutWarningPromptControl = useDialogControl()
-  const {sendInteraction} = useFeedFeedbackContext()
   const {captureAction} = useProgressGuideControls()
   const playHaptic = useHaptics()
   const isDiscoverDebugUser =
@@ -123,11 +121,6 @@ let PostCtrls = ({
       setHasLikeIconBeenToggled(true)
       if (!post.viewer?.like) {
         playHaptic('Light')
-        sendInteraction({
-          item: post.uri,
-          event: 'app.bsky.feed.defs#interactionLike',
-          feedContext,
-        })
         captureAction(ProgressGuideAction.Like)
         await queueLike()
       } else {
@@ -145,9 +138,7 @@ let PostCtrls = ({
     post.viewer?.like,
     queueLike,
     queueUnlike,
-    sendInteraction,
     captureAction,
-    feedContext,
     isBlocked,
   ])
 
@@ -162,11 +153,6 @@ let PostCtrls = ({
 
     try {
       if (!post.viewer?.repost) {
-        sendInteraction({
-          item: post.uri,
-          event: 'app.bsky.feed.defs#interactionRepost',
-          feedContext,
-        })
         await queueRepost()
       } else {
         await queueUnrepost()
@@ -182,8 +168,6 @@ let PostCtrls = ({
     post.viewer?.repost,
     queueRepost,
     queueUnrepost,
-    sendInteraction,
-    feedContext,
     isBlocked,
   ])
 
@@ -196,20 +180,13 @@ let PostCtrls = ({
       return
     }
 
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#interactionQuote',
-      feedContext,
-    })
     openComposer({
       quote: post,
       onPost: onPostReply,
     })
   }, [
     _,
-    sendInteraction,
     post,
-    feedContext,
     openComposer,
     onPostReply,
     isBlocked,
@@ -220,12 +197,7 @@ let PostCtrls = ({
     const href = makeProfileLink(post.author, 'post', urip.rkey)
     const url = toShareUrl(href)
     shareUrl(url)
-    sendInteraction({
-      item: post.uri,
-      event: 'app.bsky.feed.defs#interactionShare',
-      feedContext,
-    })
-  }, [post.uri, post.author, sendInteraction, feedContext])
+  }, [post.uri, post.author])
 
   const btnStyle = React.useCallback(
     ({pressed, hovered}: PressableStateCallbackType) => [

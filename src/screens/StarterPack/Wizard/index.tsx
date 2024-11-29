@@ -20,7 +20,6 @@ import {HITSLOP_10, STARTER_PACK_MAX_SIZE} from '#/lib/constants'
 import {useEnableKeyboardControllerScreen} from '#/lib/hooks/useEnableKeyboardController'
 import {createSanitizedDisplayName} from '#/lib/moderation/create-sanitized-display-name'
 import {CommonNavigatorParams, NavigationProp} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {sanitizeDisplayName} from '#/lib/strings/display-names'
 import {sanitizeHandle} from '#/lib/strings/handles'
 import {enforceLen} from '#/lib/strings/helpers'
@@ -201,12 +200,6 @@ function WizardInner({
 
   const onSuccessCreate = (data: {uri: string; cid: string}) => {
     const rkey = new AtUri(data.uri).rkey
-    logEvent('starterPack:create', {
-      setName: state.name != null,
-      setDescription: state.description != null,
-      profilesCount: state.profiles.length,
-      feedsCount: state.feeds.length,
-    })
     Image.prefetch([getStarterPackOgCard(currentProfile!.did, rkey)])
     dispatch({type: 'SetProcessing', processing: false})
     navigation.replace('StarterPack', {

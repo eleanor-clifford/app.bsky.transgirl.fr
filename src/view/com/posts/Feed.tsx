@@ -16,12 +16,10 @@ import {useQueryClient} from '@tanstack/react-query'
 
 import {DISCOVER_FEED_URI, KNOWN_SHUTDOWN_FEEDS} from '#/lib/constants'
 import {useInitialNumToRender} from '#/lib/hooks/useInitialNumToRender'
-import {logEvent} from '#/lib/statsig/statsig'
 import {useTheme} from '#/lib/ThemeContext'
 import {logger} from '#/logger'
 import {isIOS, isWeb} from '#/platform/detection'
 import {listenPostCreated} from '#/state/events'
-import {useFeedFeedbackContext} from '#/state/feed-feedback'
 import {STALE} from '#/state/queries'
 import {
   FeedDescriptor,
@@ -149,7 +147,6 @@ let Feed = ({
   const queryClient = useQueryClient()
   const {currentAccount, hasSession} = useSession()
   const initialNumToRender = useInitialNumToRender()
-  const feedFeedback = useFeedFeedbackContext()
   const [isPTRing, setIsPTRing] = React.useState(false)
   const checkForNewRef = React.useRef<(() => void) | null>(null)
   const lastFetchRef = React.useRef<number>(Date.now())
@@ -388,11 +385,6 @@ let Feed = ({
   // =
 
   const onRefresh = React.useCallback(async () => {
-    logEvent('feed:refresh', {
-      feedType: feedType,
-      feedUrl: feed,
-      reason: 'pull-to-refresh',
-    })
     setIsPTRing(true)
     try {
       await refetch()
@@ -405,12 +397,6 @@ let Feed = ({
 
   const onEndReached = React.useCallback(async () => {
     if (isFetching || !hasNextPage || isError) return
-
-    logEvent('feed:endReached', {
-      feedType: feedType,
-      feedUrl: feed,
-      itemCount: feedItems.length,
-    })
     try {
       await fetchNextPage()
     } catch (err) {
@@ -571,7 +557,6 @@ let Feed = ({
         windowSize={9}
         maxToRenderPerBatch={isIOS ? 5 : 1}
         updateCellsBatchingPeriod={40}
-        onItemSeen={feedFeedback.onItemSeen}
       />
     </View>
   )

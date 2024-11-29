@@ -26,9 +26,9 @@ export function Links() {
         </InlineLinkText>
         <InlineLinkText
           label="foo"
-          to="https://bsky.app/profile/bsky.app"
+          to="https://app.bsky.transgirl.fr/profile/bsky.app"
           style={[a.text_md]}>
-          Internal (bsky.app)
+          Internal (app.bsky.transgirl.fr)
         </InlineLinkText>
 
         <Link
@@ -36,13 +36,13 @@ export function Links() {
           color="primary"
           size="large"
           label="View @bsky.app's profile"
-          to="https://bsky.app/profile/bsky.app">
+          to="https://app.bsky.transgirl.fr/profile/bsky.app">
           <ButtonText>Link as a button</ButtonText>
         </Link>
 
         <Link
           label="View @bsky.app's profile"
-          to="https://bsky.app/profile/bsky.app">
+          to="https://app.bsky.transgirl.fr/profile/bsky.app">
           <View
             style={[
               a.flex_row,

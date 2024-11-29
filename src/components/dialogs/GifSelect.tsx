@@ -11,7 +11,6 @@ import {Image} from 'expo-image'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {cleanError} from '#/lib/strings/errors'
 import {isWeb} from '#/platform/detection'
 import {
@@ -297,7 +296,6 @@ export function GifPreview({
   const t = useTheme()
 
   const onPress = useCallback(() => {
-    logEvent('composer:gif:select', {})
     onSelectGif(gif)
   }, [onSelectGif, gif])
 

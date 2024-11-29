@@ -22,7 +22,6 @@ import {getCurrentRoute} from '#/lib/routes/helpers'
 import {makeProfileLink} from '#/lib/routes/links'
 import {CommonNavigatorParams, NavigationProp} from '#/lib/routes/types'
 import {shareUrl} from '#/lib/sharing'
-import {logEvent} from '#/lib/statsig/statsig'
 import {richTextToString} from '#/lib/strings/rich-text-helpers'
 import {toShareUrl} from '#/lib/strings/url-helpers'
 import {getTranslatorLink} from '#/locale/helpers'
@@ -30,7 +29,6 @@ import {logger} from '#/logger'
 import {isWeb} from '#/platform/detection'
 import {Shadow} from '#/state/cache/post-shadow'
 import {useProfileShadow} from '#/state/cache/profile-shadow'
-import {useFeedFeedbackContext} from '#/state/feed-feedback'
 import {useLanguagePrefs} from '#/state/preferences'
 import {useHiddenPosts, useHiddenPostsApi} from '#/state/preferences'
 import {usePinnedPostMutation} from '#/state/queries/pinned-post'
@@ -106,7 +104,6 @@ let PostDropdownMenuItems = ({
     usePinnedPostMutation()
   const hiddenPosts = useHiddenPosts()
   const {hidePost} = useHiddenPostsApi()
-  const feedFeedback = useFeedFeedbackContext()
   const openLink = useOpenLink()
   const navigation = useNavigation<NavigationProp>()
   const {mutedWordsDialogControl} = useGlobalDialogsControlContext()
@@ -258,22 +255,12 @@ let PostDropdownMenuItems = ({
   }, [href])
 
   const onPressShowMore = React.useCallback(() => {
-    feedFeedback.sendInteraction({
-      event: 'app.bsky.feed.defs#requestMore',
-      item: postUri,
-      feedContext: postFeedContext,
-    })
     Toast.show(_(msg`Feedback sent!`))
-  }, [feedFeedback, postUri, postFeedContext, _])
+  }, [_])
 
   const onPressShowLess = React.useCallback(() => {
-    feedFeedback.sendInteraction({
-      event: 'app.bsky.feed.defs#requestLess',
-      item: postUri,
-      feedContext: postFeedContext,
-    })
     Toast.show(_(msg`Feedback sent!`))
-  }, [feedFeedback, postUri, postFeedContext, _])
+  }, [_])
 
   const onSelectChatToShareTo = React.useCallback(
     (conversation: string) => {
@@ -346,7 +333,6 @@ let PostDropdownMenuItems = ({
   ])
 
   const onPressPin = useCallback(() => {
-    logEvent(isPinned ? 'post:unpin' : 'post:pin', {})
     pinPostMutate({
       postUri,
       postCid,
@@ -456,7 +442,7 @@ let PostDropdownMenuItems = ({
           )}
         </Menu.Group>
 
-        {hasSession && feedFeedback.enabled && (
+        {hasSession && (
           <>
             <Menu.Divider />
             <Menu.Group>

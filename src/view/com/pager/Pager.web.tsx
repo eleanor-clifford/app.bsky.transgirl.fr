@@ -2,7 +2,6 @@ import React from 'react'
 import {View} from 'react-native'
 import {flushSync} from 'react-dom'
 
-import {LogEvents} from '#/lib/statsig/events'
 import {s} from '#/lib/styles'
 
 export interface RenderTabBarFnProps {
@@ -18,7 +17,6 @@ interface Props {
   onPageSelected?: (index: number) => void
   onPageSelecting?: (
     index: number,
-    reason: LogEvents['home:feedDisplayed']['reason'],
   ) => void
 }
 export const Pager = React.forwardRef(function PagerImpl(
@@ -38,14 +36,13 @@ export const Pager = React.forwardRef(function PagerImpl(
   React.useImperativeHandle(ref, () => ({
     setPage: (
       index: number,
-      reason: LogEvents['home:feedDisplayed']['reason'],
     ) => {
-      onTabBarSelect(index, reason)
+      onTabBarSelect(index)
     },
   }))
 
   const onTabBarSelect = React.useCallback(
-    (index: number, reason: LogEvents['home:feedDisplayed']['reason']) => {
+    (index: number) => {
       const scrollY = window.scrollY
       // We want to determine if the tabbar is already "sticking" at the top (in which
       // case we should preserve and restore scroll), or if it is somewhere below in the
@@ -64,7 +61,7 @@ export const Pager = React.forwardRef(function PagerImpl(
       flushSync(() => {
         setSelectedPage(index)
         onPageSelected?.(index)
-        onPageSelecting?.(index, reason)
+        onPageSelecting?.(index)
       })
       if (isSticking) {
         const restoredScrollY = scrollYs.current[index]

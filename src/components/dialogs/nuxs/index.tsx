@@ -1,7 +1,6 @@
 import React from 'react'
 import {AppBskyActorDefs} from '@atproto/api'
 
-import {useGate} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {
   Nux,
@@ -30,7 +29,6 @@ type Context = {
 const queuedNuxs: {
   id: Nux
   enabled?: (props: {
-    gate: ReturnType<typeof useGate>
     currentAccount: SessionAccount
     currentProfile: AppBskyActorDefs.ProfileViewDetailed
     preferences: UsePreferencesQueryResponse
@@ -79,7 +77,6 @@ function Inner({
   currentProfile: AppBskyActorDefs.ProfileViewDetailed
   preferences: UsePreferencesQueryResponse
 }) {
-  const gate = useGate()
   const {nuxs} = useNuxs()
   const [snoozed, setSnoozed] = React.useState(() => {
     return isSnoozed()
@@ -119,13 +116,13 @@ function Inner({
         continue
       }
 
-      // then check gate (track exposure)
-      if (
-        enabled &&
-        !enabled({gate, currentAccount, currentProfile, preferences})
-      ) {
-        continue
-      }
+      //// then check gate (track exposure)
+      //if (
+        //enabled &&
+        //!enabled({gate, currentAccount, currentProfile, preferences})
+      //) {
+        //continue
+      //}
 
       logger.debug(`NUX dialogs: activating '${id}' NUX`)
 
@@ -153,7 +150,6 @@ function Inner({
     snoozed,
     snoozeNuxDialog,
     upsertNux,
-    gate,
     currentAccount,
     currentProfile,
     preferences,

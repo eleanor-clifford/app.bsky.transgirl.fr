@@ -14,7 +14,6 @@ import {useLingui} from '@lingui/react'
 import {isAndroidWeb} from '#/lib/browser'
 import {JOINED_THIS_WEEK} from '#/lib/constants'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
-import {logEvent} from '#/lib/statsig/statsig'
 import {createStarterPackGooglePlayUri} from '#/lib/strings/starter-pack'
 import {isWeb} from '#/platform/detection'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
@@ -141,9 +140,6 @@ function LandingScreenLoaded({
     } else {
       onContinue()
     }
-    logEvent('starterPack:ctaPress', {
-      starterPack: starterPack.uri,
-    })
   }
 
   const onJoinWithoutPress = () => {

@@ -4,7 +4,6 @@ import {msg} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
 import {nanoid} from 'nanoid/non-secure'
 
-import {logEvent} from '#/lib/statsig/statsig'
 import {createFullHandle} from '#/lib/strings/handles'
 import {logger} from '#/logger'
 import {ScreenTransition} from '#/screens/Login/ScreenTransition'
@@ -40,7 +39,6 @@ export function StepCaptcha() {
   const onSuccess = React.useCallback(
     (code: string) => {
       setCompleted(true)
-      logEvent('signup:captchaSuccess', {})
       dispatch({
         type: 'submit',
         task: {verificationCode: code, mutableProcessed: false},
@@ -55,7 +53,6 @@ export function StepCaptcha() {
         type: 'setError',
         value: _(msg`Error receiving captcha response.`),
       })
-      logEvent('signup:captchaFailure', {})
       logger.error('Signup Flow Error', {
         registrationHandle: state.handle,
         error,

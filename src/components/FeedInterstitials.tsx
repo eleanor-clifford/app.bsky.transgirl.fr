@@ -8,7 +8,6 @@ import {useNavigation} from '@react-navigation/native'
 
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import {NavigationProp} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {useModerationOpts} from '#/state/preferences/moderation-opts'
 import {useGetPopularFeedsQuery} from '#/state/queries/feed'
@@ -255,9 +254,6 @@ export function ProfileGrid({
         <ProfileCard.Link
           key={profile.did}
           profile={profile}
-          onPress={() => {
-            logEvent('feed:interstitial:profileCard:press', {})
-          }}
           style={[
             a.flex_1,
             gtMobile && web([a.flex_0, {width: 'calc(50% - 6px)'}]),
@@ -403,10 +399,7 @@ export function SuggestedFeeds() {
       {feeds.slice(0, numFeedsToDisplay).map(feed => (
         <FeedCard.Link
           key={feed.uri}
-          view={feed}
-          onPress={() => {
-            logEvent('feed:interstitial:feedCard:press', {})
-          }}>
+          view={feed}>
           {({hovered, pressed}) => (
             <CardOuter
               style={[

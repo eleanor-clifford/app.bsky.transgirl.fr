@@ -11,7 +11,6 @@ import {
   HomeTabNavigatorParams,
   NativeStackScreenProps,
 } from '#/lib/routes/types'
-import {logEvent, LogEvents} from '#/lib/statsig/statsig'
 import {isWeb} from '#/platform/detection'
 import {emitSoftReset} from '#/state/events'
 import {SavedFeedSourceInfo, usePinnedFeedsInfos} from '#/state/queries/feed'
@@ -138,19 +137,6 @@ function HomeScreenReady({
     }, [setDrawerSwipeDisabled, selectedIndex, setMinimalShellMode]),
   )
 
-  useFocusEffect(
-    useNonReactiveCallback(() => {
-      if (selectedFeed) {
-        logEvent('home:feedDisplayed', {
-          index: selectedIndex,
-          feedType: selectedFeed.split('|')[0],
-          feedUrl: selectedFeed,
-          reason: 'focus',
-        })
-      }
-    }),
-  )
-
   const onPageSelected = React.useCallback(
     (index: number) => {
       setMinimalShellMode(false)
@@ -163,14 +149,8 @@ function HomeScreenReady({
   )
 
   const onPageSelecting = React.useCallback(
-    (index: number, reason: LogEvents['home:feedDisplayed']['reason']) => {
+    (index: number) => {
       const feed = allFeeds[index]
-      logEvent('home:feedDisplayed', {
-        index,
-        feedType: feed.split('|')[0],
-        feedUrl: feed,
-        reason,
-      })
     },
     [allFeeds],
   )

@@ -7,8 +7,6 @@ import {isWeb} from '#/platform/detection'
 import {SessionAccount, useSessionApi} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
 import * as Toast from '#/view/com/util/Toast'
-import {logEvent} from '../statsig/statsig'
-import {LogEvents} from '../statsig/statsig'
 
 export function useAccountSwitcher() {
   const [pendingDid, setPendingDid] = useState<string | null>(null)
@@ -19,7 +17,6 @@ export function useAccountSwitcher() {
   const onPressSwitchAccount = useCallback(
     async (
       account: SessionAccount,
-      logContext: LogEvents['account:loggedIn']['logContext'],
     ) => {
       if (pendingDid) {
         // The session API isn't resilient to race conditions so let's just ignore this.
@@ -37,7 +34,6 @@ export function useAccountSwitcher() {
             history.pushState(null, '', '/')
           }
           await resumeSession(account)
-          logEvent('account:loggedIn', {logContext, withPassword: false})
           Toast.show(_(msg`Signed in as @${account.handle}`))
         } else {
           requestSwitchToAccount({requestedAccount: account.did})

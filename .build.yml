@@ -1,0 +1,24 @@
+image: debian/trixie
+packages:
+  - yarnpkg
+  - golang
+tasks:
+  - source: |
+      test -d app.bsky.transgirl.fr || git clone https://git.sr.ht/~ecc/app.bsky.transgirl.fr
+  - yarn: |
+      cd app.bsky.transgirl.fr
+      yarnpkg install
+      yarnpkg build-web
+  - bskyweb: |
+      cd app.bsky.transgirl.fr/bskyweb
+      go mod tidy
+      go build -v -tags -timetzdelta -o ../../bskyweb ./cmd/bskyweb
+  - bskyembed: |
+      cd app.bsky.transgirl.fr/bskyembed
+      yarnpkg install
+      yarnpkg build
+      cd dist
+      tar -cvzf ../../../bskyembed.tar.gz .
+artifacts:
+  - bskyweb
+  - bskyembed.tar.gz

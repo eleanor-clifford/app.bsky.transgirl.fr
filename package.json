@@ -263,10 +263,7 @@
   "resolutions": {
     "@radix-ui/react-focus-scope": "1.1.0",
     "@react-native/babel-preset": "0.74.1",
-    "@types/react": "^18",
-    "**/expo-constants": "16.0.1",
-    "**/expo-device": "6.0.2",
-    "**/zod": "3.23.8"
+    "@types/react": "^18"
   },
   "jest": {
     "preset": "jest-expo/ios",

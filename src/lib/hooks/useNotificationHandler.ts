@@ -5,7 +5,6 @@ import {useQueryClient} from '@tanstack/react-query'
 
 import {useAccountSwitcher} from '#/lib/hooks/useAccountSwitcher'
 import {NavigationProp} from '#/lib/routes/types'
-import {logEvent} from '#/lib/statsig/statsig'
 import {logger} from '#/logger'
 import {isAndroid} from '#/platform/detection'
 import {useCurrentConvoId} from '#/state/messages/current-convo-id'
@@ -227,7 +226,6 @@ export function useNotificationsHandler() {
             {},
             logger.DebugContext.notifications,
           )
-          logEvent('notifications:openApp', {})
           invalidateCachedUnreadPage()
           truncateAndInvalidate(queryClient, RQKEY_NOTIFS())
           logger.debug('Notifications: handleNotification', {

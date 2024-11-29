@@ -71,9 +71,9 @@ function PwiOptOut({thread}: {thread: AppBskyFeedDefs.ThreadViewPost}) {
 
 function ErrorMessage() {
   return (
-    <Container href="https://bsky.app/">
+    <Container href="https://app.bsky.transgirl.fr/">
       <Link
-        href="https://bsky.app/"
+        href="https://app.bsky.transgirl.fr/"
         className="transition-transform hover:scale-110 absolute top-4 right-4">
         <img src={logo} className="h-6" />
       </Link>
